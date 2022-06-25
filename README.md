@@ -18,3 +18,16 @@ python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
+## Database Configuration
+
+Criação da estrutura de tabelas do banco de dados
+
+```cmd
+cd C:\Personal\Dropbox\Develop\sysred\backend
+py -3 -m venv .venv
+.venv\scripts\activate
+```
+```python
+>>> from app import db
+>>> db.create_all()
+```
