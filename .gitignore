@@ -1,0 +1,9 @@
+.venv/*
+__pycache__/*
+.vscode/*
+app/__pycache__/*
+app/models/__pycache__/*
+app/routes/__pycache__/*
+app/views/__pycache__/*
+app/**/__pycache__/*
+GIT
