@@ -1,0 +1,8 @@
+Flask
+Flask-SQLAlchemy
+flask_marshmallow
+marshmallow-sqlalchemy
+mysqlclient
+requests
+uwsgi
+apscheduler
