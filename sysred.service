@@ -1,0 +1,13 @@
+[Unit]
+Description=uWSGI instance to serve quickbet
+After=network.target
+
+[Service]
+User=root
+Group=nginx
+WorkingDirectory=/opt/sysred
+Environment="PATH=/opt/sysred/.venv/bin"
+ExecStart=/usr/bin/bash -c 'cd /opt/sysred; source .venv/bin/activate; uwsgi --ini sysred.ini'
+
+[Install]
+WantedBy=multi-user.target
