@@ -26,3 +26,7 @@ def delete_users(id):
 @app.route('/users/<id>', methods=['PUT'])
 def update_users(id):
     return users.update_user(id)
+
+@app.route('/user/login', methods=['POST'])
+def login_user():
+    return users.login_user()

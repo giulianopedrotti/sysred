@@ -1,5 +1,5 @@
 from werkzeug.security import generate_password_hash,check_password_hash
-from app import db
+from app import db, app
 from flask import request, jsonify
 from ..models.users import Users, user_schema, users_schema
 
@@ -10,6 +10,9 @@ from ..models.users import Users, user_schema, users_schema
 def get_users():
     name = request.args.get('name')
     username = request.args.get('username')
+    authorization = request.headers.get('Authorization')
+    if authorization != (app.config['AUTHORIZATION']):
+        return jsonify({'message': "unauthorized access"}), 401
     if name:
         users = Users.query.filter(Users.name.like(f'%{name}%')).all()
     elif username:
@@ -23,10 +26,31 @@ def get_users():
     return jsonify({'message': 'nothing found', 'data': {}})
 
 
+"""Valida usuário e senha"""
+def login_user():
+    authorization = request.headers.get('Authorization')
+    if authorization != (app.config['AUTHORIZATION']):
+        return jsonify({'message': "unauthorized access"}), 401
+    username = request.json['username']
+    password = request.json['password']
+    user = user_by_username(username)
+    if user:
+        result = user_schema.dump(user)
+        passwd = check_passwd(result['password'],password)
+        if passwd:
+            return jsonify({'message': 'credential valid', 'username': username, 'password': passwd})
+        else:
+            return jsonify({'message': 'credential invalid', 'username': username, 'password': passwd})
+    
+    return jsonify({'message': "credential don't validate"}), 404
+
 """Retorna usuário específico pelo ID no parametro da request"""
 
 
 def get_user(id):
+    authorization = request.headers.get('Authorization')
+    if authorization != (app.config['AUTHORIZATION']):
+        return jsonify({'message': "unauthorized access"}), 401
     user = Users.query.get(id)
     if user:
         result = user_schema.dump(user)
@@ -44,6 +68,10 @@ def post_user():
     name = request.json['name']
     email = request.json['email']
     admin = True
+
+    authorization = request.headers.get('Authorization')
+    if authorization != (app.config['AUTHORIZATION']):
+        return jsonify({'message': "unauthorized access"}), 401
 
     user = user_by_username(username)
     if user:
