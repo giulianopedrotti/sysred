@@ -35,3 +35,7 @@ def login_user():
 @app.route('/authorization/', methods=['GET'])
 def update_code():
     return meli.update_code()
+
+@app.route('/meli/item/<id>', methods=['GET'])
+def meli_item_id(id):
+    return meli.meli_shipments_items(id)

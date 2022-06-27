@@ -76,3 +76,23 @@ def meli_refresh_token(app_id, secret_key, refresh_token):
     _meli_refresh_token_request = requests.post(app.config['MELI_API_URI'] + _meli_refresh_token_resource)
     #Return Json Format
     return _meli_refresh_token_request.content.decode('utf-8')
+
+def meli_shipments_items(shipment_number):
+    authorization = request.headers.get('Authorization')
+    if authorization != (app.config['AUTHORIZATION']):
+        return jsonify({'message': "unauthorized access"}), 401
+    user_id = app.config['MELI_USER_ID']
+    _meli_shipments = token_by_userid(user_id)
+    access_token = _meli_shipments.access_token
+    _meli_shipments_items_resource = "/shipments/"
+    _meli_shipments_items_headers = {
+        'Authorization': 'Bearer ' + access_token
+    }
+    _meli_shipments_items_request = requests.get(
+        app.config['MELI_API_URI'] + _meli_shipments_items_resource + shipment_number + "/items", headers=_meli_shipments_items_headers)
+    #Return Json Format
+    _meli_shipments_items_json = json.loads(_meli_shipments_items_request.content.decode('utf-8'))
+    if not "error" in _meli_shipments_items_json:
+        return jsonify(_meli_shipments_items_json),200
+    else:
+        return jsonify({'message': "error to fecthed items"}), 500
