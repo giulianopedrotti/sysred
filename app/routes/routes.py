@@ -1,6 +1,7 @@
 from app import app
 from flask import jsonify, url_for, redirect, session, render_template, request, flash
 from ..views import users
+from ..views import meli
 import requests, json
 
 @app.route('/', methods=['GET'])
@@ -30,3 +31,7 @@ def update_users(id):
 @app.route('/user/login', methods=['POST'])
 def login_user():
     return users.login_user()
+
+@app.route('/authorization/', methods=['GET'])
+def update_code():
+    return meli.update_code()

@@ -59,3 +59,8 @@ systemctl status sysred
 cp sysred.conf /etc/nginx/conf.d/
 certbot --nginx -d sysred.inovachaves.com.br
 ```
+
+## Mercado Livre Api
+Id do Aplicativo = 6607560073964926
+Chave Secreta = xPoyv4IPRA8Gxov1268KBie8YzXlLQhc
+<a href="https://auth.mercadolivre.com.br/authorization?response_type=code&client_id=6607560073964926&redirect_uri=https://sysred.inovachaves.com.br/authorization/" target="_blank">Autenticar</a>

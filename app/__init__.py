@@ -16,7 +16,12 @@ app.register_blueprint(static_path)
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
 
+print(app.config['MELI_CLIENT_ID'])
+
 from .models import users
+from .models import meli
 from .routes import routes
 from .views import users
+from .views import meli
+from .views import scheduler
 
