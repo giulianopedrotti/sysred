@@ -7,3 +7,4 @@ app/routes/__pycache__/*
 app/views/__pycache__/*
 app/**/__pycache__/*
 GIT
+sysred.sock
