@@ -57,4 +57,5 @@ systemctl start sysred
 systemctl enable sysred
 systemctl status sysred
 cp sysred.conf /etc/nginx/conf.d/
+certbot --nginx -d sysred.inovachaves.com.br
 ```
