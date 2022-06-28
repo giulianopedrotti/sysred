@@ -43,3 +43,7 @@ def meli_shipments_id(id):
 @app.route('/meli/item/<id>', methods=['GET'])
 def meli_item_id(id):
     return meli.meli_item_id(id)
+
+@app.route('/meli/order/<id>', methods=['GET'])
+def meli_order_id(id):
+    return meli.meli_order_id(id)

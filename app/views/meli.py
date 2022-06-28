@@ -122,4 +122,21 @@ def meli_item_id(item_id):
     if not "error" in _meli_item_json:
         return jsonify(_meli_item_json),200
     else:
-        return jsonify({'message': "error to fecthed items"}), 500 
+        return jsonify({'message': "error to fecthed items"}), 500
+
+def meli_order_id(order_id):
+    user_id = app.config['MELI_USER_ID']
+    _meli_shipments = token_by_userid(user_id)
+    access_token = _meli_shipments.access_token
+    _meli_order_resource = "/orders/" + str(order_id)
+    _meli_order_headers = {
+        'Authorization': 'Bearer ' + access_token
+    }
+    _meli_order_request = requests.get(
+        app.config['MELI_API_URI'] + _meli_order_resource, headers=_meli_order_headers)
+    #Return Json Format
+    _meli_order_json = json.loads(_meli_order_request.content.decode('utf-8'))
+    if not "error" in _meli_order_json:
+        return jsonify(_meli_order_json),200
+    else:
+        return jsonify({'message': "error to fecthed items"}), 500
