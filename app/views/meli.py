@@ -31,8 +31,18 @@ def update_code():
             scope = login_result['scope']
             user_id = login_result['user_id']
             refresh_token = login_result['refresh_token']
-            meli = Meli(code,access_token, token_type, expires_in, expires_datetime, scope, user_id, refresh_token)
-            db.session.add(meli)
+            meli = token_by_userid(user_id)
+            if meli:
+                meli.access_token = access_token
+                meli.token_type = token_type
+                meli.expires_in = expires_in
+                meli.expires_datetime = expires_datetime
+                meli.scope = scope
+                meli.user_id = user_id
+                meli.refresh_token = refresh_token
+            else:
+                meli = Meli(code,access_token, token_type, expires_in, expires_datetime, scope, user_id, refresh_token)
+                db.session.add(meli)
             db.session.commit()
             result = meli_schema.dump(meli)
             return jsonify({'message': 'successfully registered', 'data': result.data}), 201
