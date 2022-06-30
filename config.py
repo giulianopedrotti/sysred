@@ -25,7 +25,7 @@ SQLALCHEMY_DATABASE_URI = f'mysql://{user}:{passwd}@{host}:{port}/{database}'
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 SQLALCHEMY_ENGINE_OPTIONS = {
     'connect_args': {
-        'connect_timeout': 5
+        'connect_timeout': 10
     }
 }
 SECRET_KEY = key
