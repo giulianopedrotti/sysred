@@ -196,16 +196,22 @@ def meli_inova_id(order_ship_id,fil=''):
                 "sale_fee": key['sale_fee'],
                 "unit_price": key['unit_price']
                 })
-    meli_inova_order_json.append(meli_inova_items_json)
+    
     
     if (fil == ''):
         if not "error" in meli_inova_order_json:
+            meli_inova_order_json.append(meli_inova_items_json)
             return jsonify(meli_inova_order_json),200
         else:
             return jsonify({'message': "error to fecthed inova items"}), 500
     if (fil == 'items'):
         if not "error" in meli_inova_items_json:
             return jsonify(meli_inova_items_json),200
+        else:
+            return jsonify({'message': "error to fecthed inova items"}), 500
+    if (fil == 'info'):
+        if not "error" in meli_inova_order_json:
+            return jsonify(meli_inova_order_json),200
         else:
             return jsonify({'message': "error to fecthed inova items"}), 500
 
