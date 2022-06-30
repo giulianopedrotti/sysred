@@ -173,13 +173,22 @@ def meli_inova_id(order_ship_id,fil=''):
         meli_inova_order_details = meli_inova("/orders/",meli_inova_ship_details['order_id'])
     meli_inova_nfe_details = meli_inova("/users/",str(meli_inova_order_details['buyer']['id']) + "/invoices/shipments/" + str(meli_inova_order_details['shipping']['id']))
     meli_inova_item_details = meli_inova("/items/",str(meli_inova_order_details['order_items'][0]['item']['id']))
+    if (meli_inova_nfe_details['recipient']['phone'] != None):
+        phone = meli_inova_nfe_details['recipient']['phone']['area_code'] + meli_inova_nfe_details['recipient']['phone']['number']
+    else:
+        phone = meli_inova_nfe_details['recipient']['phone']
+    if "cpf" in meli_inova_nfe_details['recipient']['identifications']:
+        document = meli_inova_nfe_details['recipient']['identifications']['cpf']
+    else:
+        document = meli_inova_nfe_details['recipient']['identifications']['cnpj']
+
     meli_inova_order_json.append({
             "user_id": meli_inova_order_details['buyer']['id'],
             "first_name": meli_inova_order_details['buyer']['first_name'],
             "last_name": meli_inova_order_details['buyer']['last_name'],
             "nickname": meli_inova_order_details['buyer']['nickname'],
-            "cpf": meli_inova_nfe_details['recipient']['identifications']['cpf'],
-            "phone": meli_inova_nfe_details['recipient']['phone']['area_code'] + meli_inova_nfe_details['recipient']['phone']['number'],
+            "document": document,
+            "phone": phone,
             "address_line": meli_inova_ship_details['receiver_address']['address_line'],
             "city": meli_inova_ship_details['receiver_address']['city']['name'],
             "state": meli_inova_ship_details['receiver_address']['state']['name'],
