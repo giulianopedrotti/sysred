@@ -104,6 +104,8 @@ def meli_shipments_items(shipment_number):
     _meli_shipments_items_json = json.loads(_meli_shipments_items_request.content.decode('utf-8'))
     if not "error" in _meli_shipments_items_json:
         return jsonify(_meli_shipments_items_json),200
+    elif "not_found_shipping_id" in _meli_shipments_items_json:
+        return jsonify({'error': "not_found_shipping_id"}), 404
     else:
         return jsonify({'message': "error to fecthed items"}), 500
 
@@ -138,5 +140,75 @@ def meli_order_id(order_id):
     _meli_order_json = json.loads(_meli_order_request.content.decode('utf-8'))
     if not "error" in _meli_order_json:
         return jsonify(_meli_order_json),200
+    elif "order_not_found" in _meli_order_json:
+        return jsonify({'error': "order_not_found"}), 404
     else:
         return jsonify({'message': "error to fecthed items"}), 500
+
+def meli_inova_id(order_ship_id,filter=''):
+    authorization = request.headers.get('Authorization')
+    if authorization != (app.config['AUTHORIZATION']):
+        return jsonify({'message': "unauthorized access"}), 401
+    user_id = app.config['MELI_USER_ID']
+    meli_db_info = token_by_userid(user_id)
+    meli_access_token = meli_db_info.access_token
+    meli_inova_headers = {
+        'Authorization': 'Bearer ' + meli_access_token
+    }
+    def meli_inova(path,id):
+        meli_inova_resource = path + str(id)
+        meli_inova_request = requests.get(
+            app.config['MELI_API_URI'] + meli_inova_resource, headers=meli_inova_headers)
+        #Return Json Format
+        return json.loads(meli_inova_request.content.decode('utf-8'))
+    meli_inova_ship_details = meli_inova("/shipments/",order_ship_id)
+    meli_inova_order_json = []
+    meli_inova_ship_json = []
+    meli_inova_items_json = []
+    if "error" in meli_inova_ship_details:
+        if "not_found_shipping_id" == meli_inova_ship_details['error']:
+            meli_inova_order_details = meli_inova("/orders/",order_ship_id)
+            meli_inova_ship_details = meli_inova("/shipments/",meli_inova_order_details['shipping']['id'])
+    else:
+        meli_inova_order_details = meli_inova("/orders/",meli_inova_ship_details['order_id'])
+    meli_inova_nfe_details = meli_inova("/users/",str(meli_inova_order_details['buyer']['id']) + "/invoices/shipments/" + str(meli_inova_order_details['shipping']['id']))
+    meli_inova_item_details = meli_inova("/items/",str(meli_inova_order_details['order_items'][0]['item']['id']))
+    meli_inova_order_json.append({
+            "user_id": meli_inova_order_details['buyer']['id'],
+            "first_name": meli_inova_order_details['buyer']['first_name'],
+            "last_name": meli_inova_order_details['buyer']['last_name'],
+            "nickname": meli_inova_order_details['buyer']['nickname'],
+            "cpf": meli_inova_nfe_details['recipient']['identifications']['cpf'],
+            "phone": meli_inova_nfe_details['recipient']['phone']['area_code'] + meli_inova_nfe_details['recipient']['phone']['number'],
+            "address_line": meli_inova_ship_details['receiver_address']['address_line'],
+            "city": meli_inova_ship_details['receiver_address']['city']['name'],
+            "state": meli_inova_ship_details['receiver_address']['state']['name'],
+            "zip_code": meli_inova_ship_details['receiver_address']['zip_code'],
+            "secure_thumbnail": meli_inova_item_details['secure_thumbnail']
+        })
+    for key in meli_inova_order_details['order_items']:
+            print(key['item']['seller_sku'])
+            meli_inova_items_json.append({
+                "item_id": key['item']['id'],
+                "seller_sku": key['item']['seller_sku'],
+                "title": key['item']['title'],
+                "quantity": key['quantity'],
+                "sale_fee": key['sale_fee'],
+                "unit_price": key['unit_price']
+                })
+    meli_inova_order_json.append(meli_inova_items_json)
+    match filter:
+        case '':
+            if not "error" in meli_inova_order_json:
+                return jsonify(meli_inova_order_json),200
+            else:
+                return jsonify({'message': "error to fecthed inova items"}), 500
+        case 'items':
+            if not "error" in meli_inova_items_json:
+                return jsonify(meli_inova_items_json),200
+            else:
+                return jsonify({'message': "error to fecthed inova items"}), 500
+
+
+    
+    

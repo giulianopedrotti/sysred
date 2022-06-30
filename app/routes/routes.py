@@ -47,3 +47,11 @@ def meli_item_id(id):
 @app.route('/meli/order/<id>', methods=['GET'])
 def meli_order_id(id):
     return meli.meli_order_id(id)
+
+@app.route('/meli/inova/<id>', methods=['GET'])
+def meli_inova_id(id):
+    return meli.meli_inova_id(id)
+
+@app.route('/meli/inova/<id>/items', methods=['GET'])
+def meli_inova_items(id):
+    return meli.meli_inova_id(id,filter="items")
