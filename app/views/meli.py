@@ -169,6 +169,7 @@ def meli_inova_id(order_ship_id,fil=''):
     meli_inova_order_json = []
     meli_inova_ship_json = []
     meli_inova_items_json = []
+    meli_inova_questions_json = []
     if "error" in meli_inova_ship_details:
         if "not_found_shipping_id" == meli_inova_ship_details['error']:
             meli_inova_order_details = meli_inova("/orders/",order_ship_id)
@@ -209,7 +210,15 @@ def meli_inova_id(order_ship_id,fil=''):
                 "sale_fee": key['sale_fee'],
                 "unit_price": key['unit_price']
                 })
-    
+    # Coletando as perguntas realizadas pelo comprador
+    for item in meli_inova_order_details['order_items']:
+        meli_inova_questions_details = meli_inova("/questions/","search?item=" + str(item['item']['id']) + "&from=" + str(meli_inova_order_details['buyer']['id']) + "&api_version=4")
+        for question in meli_inova_questions_details['questions']:
+            meli_inova_questions_json.append({
+                "question_id": question['id'],
+                "question": question['text'],
+                "answer": question['answer']['text']
+            })
     
     if (fil == ''):
         if not "error" in meli_inova_order_json:
@@ -225,6 +234,11 @@ def meli_inova_id(order_ship_id,fil=''):
     if (fil == 'info'):
         if not "error" in meli_inova_order_json:
             return jsonify(meli_inova_order_json),200
+        else:
+            return jsonify({'message': "error to fecthed inova items"}), 500
+    if (fil == 'questions'):
+        if not "error" in meli_inova_questions_json:
+            return jsonify(meli_inova_questions_json),200
         else:
             return jsonify({'message': "error to fecthed inova items"}), 500
 
