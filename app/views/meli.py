@@ -157,8 +157,12 @@ def meli_inova_id(order_ship_id,fil=''):
     }
     def meli_inova(path,id):
         meli_inova_resource = path + str(id)
+        if "payments" in path:
+            meli_inova_api_uri = "https://api.mercadopago.com/v1/"
+        else:
+            meli_inova_api_uri = app.config['MELI_API_URI']
         meli_inova_request = requests.get(
-            app.config['MELI_API_URI'] + meli_inova_resource, headers=meli_inova_headers)
+            meli_inova_api_uri + meli_inova_resource, headers=meli_inova_headers)
         #Return Json Format
         return json.loads(meli_inova_request.content.decode('utf-8'))
     meli_inova_ship_details = meli_inova("/shipments/",order_ship_id)
@@ -171,16 +175,17 @@ def meli_inova_id(order_ship_id,fil=''):
             meli_inova_ship_details = meli_inova("/shipments/",meli_inova_order_details['shipping']['id'])
     else:
         meli_inova_order_details = meli_inova("/orders/",meli_inova_ship_details['order_id'])
-    meli_inova_nfe_details = meli_inova("/users/",str(meli_inova_order_details['buyer']['id']) + "/invoices/shipments/" + str(meli_inova_order_details['shipping']['id']))
+    meli_inova_payment_details = meli_inova("/payments/",str(meli_inova_order_details['payments'][0]['id']))
     meli_inova_item_details = meli_inova("/items/",str(meli_inova_order_details['order_items'][0]['item']['id']))
-    if (meli_inova_nfe_details['recipient']['phone'] != None):
-        phone = meli_inova_nfe_details['recipient']['phone']['area_code'] + meli_inova_nfe_details['recipient']['phone']['number']
+    if not "error" in meli_inova_payment_details:
+        if (meli_inova_payment_details['payer']['phone'] != None):
+            phone = meli_inova_payment_details['payer']['phone']['area_code'] + meli_inova_payment_details['payer']['phone']['number']
+        else:
+            phone = None
+    if "cpf" in meli_inova_payment_details['payer']['identification']['type']:
+        document = meli_inova_payment_details['payer']['identification']['number']
     else:
-        phone = meli_inova_nfe_details['recipient']['phone']
-    if "cpf" in meli_inova_nfe_details['recipient']['identifications']:
-        document = meli_inova_nfe_details['recipient']['identifications']['cpf']
-    else:
-        document = meli_inova_nfe_details['recipient']['identifications']['cnpj']
+        document = meli_inova_payment_details['payer']['identification']['number']
 
     meli_inova_order_json.append({
             "user_id": meli_inova_order_details['buyer']['id'],
@@ -196,7 +201,6 @@ def meli_inova_id(order_ship_id,fil=''):
             "secure_thumbnail": meli_inova_item_details['secure_thumbnail']
         })
     for key in meli_inova_order_details['order_items']:
-            print(key['item']['seller_sku'])
             meli_inova_items_json.append({
                 "item_id": key['item']['id'],
                 "seller_sku": key['item']['seller_sku'],
