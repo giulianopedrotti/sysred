@@ -23,6 +23,11 @@ key = ''.join(random.choice(gen) for i in range(12))
 
 SQLALCHEMY_DATABASE_URI = f'mysql://{user}:{passwd}@{host}:{port}/{database}'
 SQLALCHEMY_TRACK_MODIFICATIONS = False
+SQLALCHEMY_ENGINE_OPTIONS = {
+    'connect_args': {
+        'connect_timeout': 5
+    }
+}
 SECRET_KEY = key
 DEBUG = True
 AUTHORIZATION = config['AUTHORIZATION']['token_key']
