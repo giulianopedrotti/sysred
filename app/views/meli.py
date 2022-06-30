@@ -145,7 +145,7 @@ def meli_order_id(order_id):
     else:
         return jsonify({'message': "error to fecthed items"}), 500
 
-def meli_inova_id(order_ship_id,filter=''):
+def meli_inova_id(order_ship_id,fil=''):
     authorization = request.headers.get('Authorization')
     if authorization != (app.config['AUTHORIZATION']):
         return jsonify({'message': "unauthorized access"}), 401
@@ -197,7 +197,7 @@ def meli_inova_id(order_ship_id,filter=''):
                 "unit_price": key['unit_price']
                 })
     meli_inova_order_json.append(meli_inova_items_json)
-    match filter:
+    match fil:
         case '':
             if not "error" in meli_inova_order_json:
                 return jsonify(meli_inova_order_json),200

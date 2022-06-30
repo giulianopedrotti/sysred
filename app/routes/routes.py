@@ -54,4 +54,4 @@ def meli_inova_id(id):
 
 @app.route('/meli/inova/<id>/items', methods=['GET'])
 def meli_inova_items(id):
-    return meli.meli_inova_id(id,filter="items")
+    return meli.meli_inova_id(id,fil="items")
