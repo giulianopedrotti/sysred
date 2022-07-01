@@ -1,4 +1,3 @@
-from sqlalchemy import null
 from app import db, app
 from flask import request, jsonify
 from ..models.meli import Meli, meli_schema, melis_schema

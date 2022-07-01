@@ -2,6 +2,7 @@ from app import app
 from flask import jsonify, url_for, redirect, session, render_template, request, flash
 from ..views import users
 from ..views import meli
+from ..views import sige
 import requests, json
 
 @app.route('/', methods=['GET'])
@@ -67,3 +68,7 @@ def meli_inova_questions(id):
 @app.route('/meli/inova/<id>/messages', methods=['GET'])
 def meli_inova_messages(id):
     return meli.meli_inova_id(id,fil="messages")
+
+@app.route('/sige/estoque/<deposito>', methods=['GET'])
+def sige_deposito_estoque(deposito):
+    return sige.sige_deposito_estoque(deposito)
