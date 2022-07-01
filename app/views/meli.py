@@ -1,3 +1,4 @@
+from sqlalchemy import null
 from app import db, app
 from flask import request, jsonify
 from ..models.meli import Meli, meli_schema, melis_schema
@@ -170,6 +171,7 @@ def meli_inova_id(order_ship_id,fil=''):
     meli_inova_ship_json = []
     meli_inova_items_json = []
     meli_inova_questions_json = []
+    meli_inova_messages_json = []
     if "error" in meli_inova_ship_details:
         if "not_found_shipping_id" == meli_inova_ship_details['error']:
             meli_inova_order_details = meli_inova("/orders/",order_ship_id)
@@ -219,6 +221,17 @@ def meli_inova_id(order_ship_id,fil=''):
                 "question": question['text'],
                 "answer": question['answer']['text']
             })
+    # Coletando as mensagens realizadas pelo comprador
+    if not "error" in meli_inova_order_details:
+        if (meli_inova_order_details['pack_id'] == None):
+            meli_inova_messages_details = meli_inova("/messages/packs/",str(meli_inova_order_details['id']) + "/sellers/" + str(meli_inova_order_details['seller']['id']) + "?tag=post_sale&mark_as_read=false")
+        else:
+            meli_inova_messages_details = meli_inova("/messages/packs/",str(meli_inova_order_details['pack_id']) + "/sellers/" + str(meli_inova_order_details['seller']['id']) + "?tag=post_sale&mark_as_read=false")
+        if "messages" in meli_inova_messages_details:
+            for message in meli_inova_messages_details['messages']:
+                meli_inova_messages_json.append({
+                    "message": message['text']
+                })
     
     if (fil == ''):
         if not "error" in meli_inova_order_json:
@@ -239,6 +252,11 @@ def meli_inova_id(order_ship_id,fil=''):
     if (fil == 'questions'):
         if not "error" in meli_inova_questions_json:
             return jsonify(meli_inova_questions_json),200
+        else:
+            return jsonify({'message': "error to fecthed inova items"}), 500
+    if (fil == 'messages'):
+        if not "error" in meli_inova_messages_json:
+            return jsonify(meli_inova_messages_json),200
         else:
             return jsonify({'message': "error to fecthed inova items"}), 500
 

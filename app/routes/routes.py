@@ -63,3 +63,7 @@ def meli_inova_info(id):
 @app.route('/meli/inova/<id>/questions', methods=['GET'])
 def meli_inova_questions(id):
     return meli.meli_inova_id(id,fil="questions")
+
+@app.route('/meli/inova/<id>/messages', methods=['GET'])
+def meli_inova_messages(id):
+    return meli.meli_inova_id(id,fil="messages")
