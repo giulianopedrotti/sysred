@@ -230,6 +230,7 @@ def meli_inova_id(order_ship_id,fil=''):
         if "messages" in meli_inova_messages_details:
             for message in meli_inova_messages_details['messages']:
                 meli_inova_messages_json.append({
+                    "id": message['id'],
                     "message": message['text']
                 })
     
