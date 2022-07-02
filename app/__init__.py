@@ -25,4 +25,3 @@ from .routes import routes
 from .views import users
 from .views import meli
 from .views import scheduler
-

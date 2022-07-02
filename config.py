@@ -37,6 +37,7 @@ MELI_CLIENT_SECRET = config['MELI']['meli_client_secret']
 MELI_REDIRECT_URI = config['MELI']['meli_redirect_uri']
 MELI_API_URI = config['MELI']['meli_api_uri']
 MELI_USER_ID = config['MELI']['meli_user_id']
+MELI_ACCESS_TOKEN = None
 SIGE_URL = config['SIGE']['sige_url']
 SIGE_APP = config['SIGE']['sige_app']
 SIGE_TOKEN = config['SIGE']['sige_token']

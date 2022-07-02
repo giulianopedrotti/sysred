@@ -23,4 +23,5 @@ def refresh_token():
     meli.scope = meli_token_json['scope']
     meli.user_id = meli_token_json['user_id']
     meli.refresh_token = meli_token_json['refresh_token']
+    app.config['MELI_ACCESS_TOKEN'] = meli_token_json['access_token']
     db.session.commit()

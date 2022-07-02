@@ -91,12 +91,9 @@ def meli_shipments_items(shipment_number):
     authorization = request.headers.get('Authorization')
     if authorization != (app.config['AUTHORIZATION']):
         return jsonify({'message': "unauthorized access"}), 401
-    user_id = app.config['MELI_USER_ID']
-    _meli_shipments = token_by_userid(user_id)
-    access_token = _meli_shipments.access_token
     _meli_shipments_items_resource = "/shipments/"
     _meli_shipments_items_headers = {
-        'Authorization': 'Bearer ' + access_token
+        'Authorization': 'Bearer ' + app.config['MELI_ACCESS_TOKEN']
     }
     _meli_shipments_items_request = requests.get(
         app.config['MELI_API_URI'] + _meli_shipments_items_resource + shipment_number + "/items", headers=_meli_shipments_items_headers)
@@ -110,12 +107,9 @@ def meli_shipments_items(shipment_number):
         return jsonify({'message': "error to fecthed items"}), 500
 
 def meli_item_id(item_id):
-    user_id = app.config['MELI_USER_ID']
-    _meli_shipments = token_by_userid(user_id)
-    access_token = _meli_shipments.access_token
     _meli_item_resource = "/items/" + str(item_id)
     _meli_item_headers = {
-        'Authorization': 'Bearer ' + access_token
+        'Authorization': 'Bearer ' + app.config['MELI_ACCESS_TOKEN']
     }
     _meli_item_request = requests.get(
         app.config['MELI_API_URI'] + _meli_item_resource, headers=_meli_item_headers)
@@ -127,12 +121,9 @@ def meli_item_id(item_id):
         return jsonify({'message': "error to fecthed items"}), 500
 
 def meli_order_id(order_id):
-    user_id = app.config['MELI_USER_ID']
-    _meli_shipments = token_by_userid(user_id)
-    access_token = _meli_shipments.access_token
     _meli_order_resource = "/orders/" + str(order_id)
     _meli_order_headers = {
-        'Authorization': 'Bearer ' + access_token
+        'Authorization': 'Bearer ' + app.config['MELI_ACCESS_TOKEN']
     }
     _meli_order_request = requests.get(
         app.config['MELI_API_URI'] + _meli_order_resource, headers=_meli_order_headers)
@@ -149,9 +140,10 @@ def meli_inova_id(order_ship_id,fil=''):
     authorization = request.headers.get('Authorization')
     if authorization != (app.config['AUTHORIZATION']):
         return jsonify({'message': "unauthorized access"}), 401
-    user_id = app.config['MELI_USER_ID']
-    meli_db_info = token_by_userid(user_id)
-    meli_access_token = meli_db_info.access_token
+    #user_id = app.config['MELI_USER_ID']
+    #meli_db_info = token_by_userid(user_id)
+    #meli_access_token = meli_db_info.access_token
+    meli_access_token = app.config['MELI_ACCESS_TOKEN']
     meli_inova_headers = {
         'Authorization': 'Bearer ' + meli_access_token
     }
@@ -262,4 +254,6 @@ def meli_inova_id(order_ship_id,fil=''):
 
 
     
-    
+meli_db_info = token_by_userid(app.config['MELI_USER_ID'])
+meli_access_token = meli_db_info.access_token
+app.config['MELI_ACCESS_TOKEN'] = meli_access_token
