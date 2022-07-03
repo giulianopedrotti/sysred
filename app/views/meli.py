@@ -255,5 +255,6 @@ def meli_inova_id(order_ship_id,fil=''):
 
     
 meli_db_info = token_by_userid(app.config['MELI_USER_ID'])
-meli_access_token = meli_db_info.access_token
-app.config['MELI_ACCESS_TOKEN'] = meli_access_token
+if (meli_db_info != None):
+    meli_access_token = meli_db_info.access_token
+    app.config['MELI_ACCESS_TOKEN'] = meli_access_token
