@@ -9,6 +9,9 @@ git pull
 echo "Install Requirements"
 source .venv/bin/activate
 .venv/bin/pip install -r requirements.txt
+echo "Adjusting permissions"
+cd /opt/
+chown -R admininova:nginx
 echo "Starting nginx and sysred services"
 systemctl start sysred
 systemctl start nginx
