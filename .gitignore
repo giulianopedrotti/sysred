@@ -8,3 +8,4 @@ app/views/__pycache__/*
 app/**/__pycache__/*
 GIT
 sysred.sock
+sysred.bkp
