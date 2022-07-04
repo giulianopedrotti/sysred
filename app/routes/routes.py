@@ -72,3 +72,7 @@ def meli_inova_messages(id):
 @app.route('/sige/estoque/<deposito>', methods=['GET'])
 def sige_deposito_estoque(deposito):
     return sige.sige_deposito_estoque(deposito)
+
+@app.route('/sige/pedidos/pesquisar/<parameter>/<value>/<findvalue>', methods=['GET'])
+def sige_pedidos_pesquisar(parameter, value, findvalue):
+    return sige.sige_pedidos_pesquisar(parameter, value, findvalue)
