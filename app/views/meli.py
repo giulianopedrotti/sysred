@@ -45,7 +45,10 @@ def update_code():
                 db.session.add(meli)
             db.session.commit()
             result = meli_schema.dump(meli)
-            return jsonify({'message': 'successfully registered', 'data': result.data}), 201
+            if "data" in result:
+                return jsonify({'message': 'successfully registered', 'data': result.data}), 201
+            else:
+                return jsonify({'message': 'creation process in progess', 'data': result})
         except:
             return jsonify({'message': 'unable to create'}), 500
     else:

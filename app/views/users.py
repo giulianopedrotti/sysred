@@ -1,8 +1,8 @@
+from MySQLdb import IntegrityError
 from werkzeug.security import generate_password_hash,check_password_hash
 from app import db, app
 from flask import request, jsonify
 from ..models.users import Users, user_schema, users_schema
-
 
 """Retorna lista de usuários"""
 
@@ -85,9 +85,15 @@ def post_user():
         db.session.add(user)
         db.session.commit()
         result = user_schema.dump(user)
-        return jsonify({'message': 'successfully registered', 'data': result.data}), 201
-    except:
+        if "data" in result:
+            return jsonify({'message': 'successfully registered', 'data': result.data}), 201
+        else:
+            return jsonify({'message': 'creation process in progess', 'data': result})
+    except Exception as e:
+        print(e)
         return jsonify({'message': 'unable to create', 'data': {}}), 500
+    finally:
+        db.session.close()
 
 
 """Atualiza usuário baseado no ID, caso o mesmo exista."""
@@ -98,6 +104,7 @@ def update_user(id):
     password = request.json['password']
     name = request.json['name']
     email = request.json['email']
+    db.session.rollback()
     user = Users.query.get(id)
 
     if not user:
@@ -129,7 +136,6 @@ def delete_user(id):
     if user:
         try:
             db.session.delete(user)
-            db.session.commit()
             result = user_schema.dump(user)
             return jsonify({'message': 'successfully deleted', 'data': result}), 200
         except:
