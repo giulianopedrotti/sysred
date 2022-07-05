@@ -195,7 +195,8 @@ def meli_inova_id(order_ship_id,fil=''):
             "city": meli_inova_ship_details['receiver_address']['city']['name'],
             "state": meli_inova_ship_details['receiver_address']['state']['name'],
             "zip_code": meli_inova_ship_details['receiver_address']['zip_code'],
-            "secure_thumbnail": meli_inova_item_details['secure_thumbnail']
+            "secure_thumbnail": meli_inova_item_details['secure_thumbnail'],
+            "order_id": meli_inova_ship_details['order_id']
         })
     for key in meli_inova_order_details['order_items']:
             meli_inova_items_json.append({
