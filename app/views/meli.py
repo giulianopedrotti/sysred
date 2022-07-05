@@ -176,7 +176,10 @@ def meli_inova_id(order_ship_id,fil=''):
     meli_inova_item_details = meli_inova("/items/",str(meli_inova_order_details['order_items'][0]['item']['id']))
     if not "error" in meli_inova_payment_details:
         if (meli_inova_payment_details['payer']['phone'] != None):
-            phone = meli_inova_payment_details['payer']['phone']['area_code'] + meli_inova_payment_details['payer']['phone']['number']
+            try:
+                phone = meli_inova_payment_details['payer']['phone']['area_code'] + meli_inova_payment_details['payer']['phone']['number']
+            except:
+                phone = meli_inova_payment_details['payer']['phone']['number']
         else:
             phone = None
     if "cpf" in meli_inova_payment_details['payer']['identification']['type']:
