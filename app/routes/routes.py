@@ -69,6 +69,10 @@ def meli_inova_questions(id):
 def meli_inova_messages(id):
     return meli.meli_inova_id(id,fil="messages")
 
+@app.route('/meli/inova/<id>/payments', methods=['GET'])
+def meli_inova_payments(id):
+    return meli.meli_inova_id(id,fil="payments")
+
 @app.route('/sige/estoque/<deposito>', methods=['GET'])
 def sige_deposito_estoque(deposito):
     return sige.sige_deposito_estoque(deposito)

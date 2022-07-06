@@ -182,10 +182,22 @@ def meli_inova_id(order_ship_id,fil=''):
                 phone = meli_inova_payment_details['payer']['phone']['number']
         else:
             phone = None
-    if "cpf" in meli_inova_payment_details['payer']['identification']['type']:
-        document = meli_inova_payment_details['payer']['identification']['number']
+    if meli_inova_payment_details['payer']['identification']['type'] != None:
+        if "cpf" in meli_inova_payment_details['payer']['identification']['type']:
+            document = meli_inova_payment_details['payer']['identification']['number']
+        else:
+            document = meli_inova_payment_details['payer']['identification']['number']
     else:
-        document = meli_inova_payment_details['payer']['identification']['number']
+        document = ""
+
+    if meli_inova_payment_details['payment_method_id'] == "pix":
+        payment_method_id = "PIX"
+    elif meli_inova_payment_details['payment_method_id'] == "visa":
+        payment_method_id = "Visa"
+    elif meli_inova_payment_details['payment_method_id'] == "mastercard":
+        payment_method_id = "Mastercard"
+    else:
+        payment_method_id = "Outros"
 
     meli_inova_order_json.append({
             "user_id": meli_inova_order_details['buyer']['id'],
@@ -199,6 +211,7 @@ def meli_inova_id(order_ship_id,fil=''):
             "state": meli_inova_ship_details['receiver_address']['state']['name'],
             "zip_code": meli_inova_ship_details['receiver_address']['zip_code'],
             "secure_thumbnail": meli_inova_item_details['secure_thumbnail'],
+            "payment_method_id": payment_method_id,
             "order_id": meli_inova_ship_details['order_id']
         })
     for key in meli_inova_order_details['order_items']:
@@ -256,6 +269,11 @@ def meli_inova_id(order_ship_id,fil=''):
     if (fil == 'messages'):
         if not "error" in meli_inova_messages_json:
             return jsonify(meli_inova_messages_json),200
+        else:
+            return jsonify({'message': "error to fecthed inova items"}), 500
+    if (fil == 'payments'):
+        if not "error" in meli_inova_payment_details:
+            return jsonify(meli_inova_payment_details),200
         else:
             return jsonify({'message': "error to fecthed inova items"}), 500
 
