@@ -213,6 +213,7 @@ def meli_inova_id(order_ship_id,fil=''):
             "city": meli_inova_ship_details['receiver_address']['city']['name'],
             "state": meli_inova_ship_details['receiver_address']['state']['name'],
             "zip_code": meli_inova_ship_details['receiver_address']['zip_code'],
+            "order_cost": meli_inova_ship_details['order_cost'],
             "secure_thumbnail": meli_inova_item_details['secure_thumbnail'],
             "payment_method_id": payment_method_id,
             "order_id": meli_inova_ship_details['order_id']
