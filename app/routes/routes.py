@@ -80,3 +80,7 @@ def sige_deposito_estoque(deposito):
 @app.route('/sige/pedidos/pesquisar/<parameter>/<value>/<findvalue>', methods=['GET'])
 def sige_pedidos_pesquisar(parameter, value, findvalue):
     return sige.sige_pedidos_pesquisar(parameter, value, findvalue)
+
+@app.route('/order', methods=['POST'])
+def sige_post_order():
+    return sige.sige_post_order()
