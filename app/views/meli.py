@@ -139,6 +139,21 @@ def meli_order_id(order_id):
     else:
         return jsonify({'message': "error to fecthed items"}), 500
 
+def meli_inova(path,id):
+    meli_inova_resource = path + str(id)
+    meli_access_token = app.config['MELI_ACCESS_TOKEN']
+    meli_inova_headers = {
+        'Authorization': 'Bearer ' + meli_access_token
+    }
+    if "payments" in path:
+        meli_inova_api_uri = "https://api.mercadopago.com/v1/"
+    else:
+        meli_inova_api_uri = app.config['MELI_API_URI']
+    meli_inova_request = requests.get(
+        meli_inova_api_uri + meli_inova_resource, headers=meli_inova_headers)
+    #Return Json Format
+    return json.loads(meli_inova_request.content.decode('utf-8'))
+    
 def meli_inova_id(order_ship_id,fil=''):
     authorization = request.headers.get('Authorization')
     if authorization != (app.config['AUTHORIZATION']):
@@ -146,20 +161,7 @@ def meli_inova_id(order_ship_id,fil=''):
     #user_id = app.config['MELI_USER_ID']
     #meli_db_info = token_by_userid(user_id)
     #meli_access_token = meli_db_info.access_token
-    meli_access_token = app.config['MELI_ACCESS_TOKEN']
-    meli_inova_headers = {
-        'Authorization': 'Bearer ' + meli_access_token
-    }
-    def meli_inova(path,id):
-        meli_inova_resource = path + str(id)
-        if "payments" in path:
-            meli_inova_api_uri = "https://api.mercadopago.com/v1/"
-        else:
-            meli_inova_api_uri = app.config['MELI_API_URI']
-        meli_inova_request = requests.get(
-            meli_inova_api_uri + meli_inova_resource, headers=meli_inova_headers)
-        #Return Json Format
-        return json.loads(meli_inova_request.content.decode('utf-8'))
+    
     meli_inova_ship_details = meli_inova("/shipments/",order_ship_id)
     meli_inova_order_json = []
     meli_inova_ship_json = []
